@@ -27,7 +27,7 @@
             android:value="@integer/google_play_services_version" />
 
         <service
-            android:name=".MyWatchFace"
+            android:name=".VFDWatchFace"
             android:label="@string/my_analog_name"
             android:permission="android.permission.BIND_WALLPAPER">
             <intent-filter>

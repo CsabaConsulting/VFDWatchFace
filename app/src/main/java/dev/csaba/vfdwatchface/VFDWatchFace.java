@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  * in the Google Watch Face Code Lab:
  * https://codelabs.developers.google.com/codelabs/watchface/index.html#0
  */
-public class MyWatchFace extends CanvasWatchFaceService {
+public class VFDWatchFace extends CanvasWatchFaceService {
 
     /*
      * Updates rate in milliseconds for interactive mode. We update once a second to advance the
@@ -61,15 +61,15 @@ public class MyWatchFace extends CanvasWatchFaceService {
     }
 
     private static class EngineHandler extends Handler {
-        private final WeakReference<MyWatchFace.Engine> mWeakReference;
+        private final WeakReference<VFDWatchFace.Engine> mWeakReference;
 
-        EngineHandler(MyWatchFace.Engine reference) {
+        EngineHandler(VFDWatchFace.Engine reference) {
             mWeakReference = new WeakReference<>(reference);
         }
 
         @Override
         public void handleMessage(@NonNull Message msg) {
-            MyWatchFace.Engine engine = mWeakReference.get();
+            VFDWatchFace.Engine engine = mWeakReference.get();
             if (engine != null) {
                 if (msg.what == MSG_UPDATE_TIME) {
                     engine.handleUpdateTimeMessage();
@@ -122,7 +122,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
         public void onCreate(SurfaceHolder holder) {
             super.onCreate(holder);
 
-            setWatchFaceStyle(new WatchFaceStyle.Builder(MyWatchFace.this)
+            setWatchFaceStyle(new WatchFaceStyle.Builder(VFDWatchFace.this)
                     .setAcceptsTapEvents(true)
                     .build());
 
@@ -465,7 +465,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
             }
             mRegisteredTimeZoneReceiver = true;
             IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
-            MyWatchFace.this.registerReceiver(mTimeZoneReceiver, filter);
+            VFDWatchFace.this.registerReceiver(mTimeZoneReceiver, filter);
         }
 
         private void unregisterReceiver() {
@@ -473,7 +473,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
                 return;
             }
             mRegisteredTimeZoneReceiver = false;
-            MyWatchFace.this.unregisterReceiver(mTimeZoneReceiver);
+            VFDWatchFace.this.unregisterReceiver(mTimeZoneReceiver);
         }
 
         /**
