@@ -1,0 +1,2 @@
+rootProject.name='VFD Watch Face'
+include ':app'
