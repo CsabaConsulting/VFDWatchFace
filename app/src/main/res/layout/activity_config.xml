@@ -36,15 +36,6 @@
         android:background="@drawable/settings_watch_face_preview_highlight"/>
 
 
-    <View
-        android:id="@+id/watch_face_main_part"
-        android:layout_width="@dimen/settings_preview_size"
-        android:layout_height="@dimen/settings_preview_size"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/settings_watch_face_preview_main_part"/>
-
-
     <ImageView
         android:id="@+id/top_center_complication_background"
         style="?android:borderlessButtonStyle"
