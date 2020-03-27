@@ -99,6 +99,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
         private SimpleDateFormat ambientTimeFormat;
 
         private TextPaint timePaint;
+        private TextPaint dividerPaint;
 
         private boolean ambient;
 
@@ -178,11 +179,19 @@ public class VFDWatchFace extends CanvasWatchFaceService {
 
             // The time paint
             timePaint = new TextPaint();
-            timePaint.setColor(Color.WHITE);
+            timePaint.setColor(Color.YELLOW);
             timePaint.setAntiAlias(true);
             timePaint.setTextSize(TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP, 68, displayMetrics));
             timePaint.setTypeface(vt323Typeface);
+
+            // Divider paint
+            dividerPaint = new TextPaint();
+            dividerPaint.setColor(Color.parseColor("#FFBF00"));  // Amber
+            dividerPaint.setAntiAlias(true);
+            dividerPaint.setTextSize(TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 68, displayMetrics));
+            dividerPaint.setTypeface(vt323Typeface);
         }
 
         @Override
@@ -360,8 +369,10 @@ public class VFDWatchFace extends CanvasWatchFaceService {
         private void updateWatchHandStyle() {
             if (ambient) {
                 timePaint.setAntiAlias(false);
+                dividerPaint.setAntiAlias(false);
             } else {
                 timePaint.setAntiAlias(true);
+                dividerPaint.setAntiAlias(false);
             }
         }
 
@@ -374,6 +385,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             if (muteMode != inMuteMode) {
                 muteMode = inMuteMode;
                 timePaint.setAlpha(inMuteMode ? 100 : 255);
+                dividerPaint.setAlpha(inMuteMode ? 100 : 255);
                 invalidate();
             }
         }
@@ -442,8 +454,8 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             calendar.setTimeInMillis(now);
 
             drawBackground(canvas);
-            drawWatchFace(canvas, bounds);
             drawComplications(canvas, now);
+            drawWatchFace(canvas, bounds);
         }
 
         private void drawBackground(Canvas canvas) {
@@ -461,18 +473,53 @@ public class VFDWatchFace extends CanvasWatchFaceService {
 
         private void drawWatchFace(Canvas canvas, Rect bounds) {
 
-            SimpleDateFormat timeFormat = ambient ? ambientTimeFormat : normalTimeFormat;
-            Rect timeBounds = new Rect();
-            String timeText = timeFormat.format(calendar.getTime());
-            int timeX;
-            int timeY;
+            if (ambient) {
+                Rect timeBounds = new Rect();
+                String timeText = ambientTimeFormat.format(calendar.getTime());
+                int timeX;
+                int timeY;
 
-            timePaint.getTextBounds(timeText, 0, timeText.length(), timeBounds);
-            timeX = Math.abs(bounds.centerX() / 32);
-            timeY = Math.abs(bounds.centerY() - timeBounds.centerY());
+                timePaint.getTextBounds(timeText, 0, timeText.length(), timeBounds);
+                timeX = Math.abs(bounds.centerX() - timeBounds.centerX());
+                timeY = Math.abs(bounds.centerY() - timeBounds.centerY());
 
-            // We draw the date and the time
-            canvas.drawText(timeText, timeX, timeY, timePaint);
+                canvas.drawText(timeText, timeX, timeY, timePaint);
+            } else {
+                Rect timeBounds = new Rect();
+                String timeText = normalTimeFormat.format(calendar.getTime());
+                String[] timeParts = timeText.split(":");
+
+                int margin = bounds.width() / 12;
+                boolean paintDividers = calendar.get(Calendar.SECOND) % 2 == 0;
+
+                // Minute: in center
+                timePaint.getTextBounds(timeParts[1], 0, timeParts[1].length(), timeBounds);
+                int minuteX = Math.abs(bounds.centerX() - timeBounds.centerX());
+                int minuteY = Math.abs(bounds.centerY() - timeBounds.centerY());
+                int minuteRight = minuteX + timeBounds.width();
+
+                canvas.drawText(timeParts[1], minuteX, minuteY, timePaint);
+
+                // Hour
+                timePaint.getTextBounds(timeParts[0], 0, timeParts[0].length(), timeBounds);
+                int hourX = minuteX - timeBounds.width() - margin;
+
+                canvas.drawText(timeParts[0], hourX, minuteY, timePaint);
+
+                if (paintDividers) {
+                    canvas.drawText(":", minuteX - margin, minuteY, dividerPaint);
+                }
+
+                // Second
+                timePaint.getTextBounds(timeParts[2], 0, timeParts[2].length(), timeBounds);
+                int secondX = minuteRight + margin;
+
+                canvas.drawText(timeParts[2], secondX, minuteY, timePaint);
+
+                if (paintDividers) {
+                    canvas.drawText(":", secondX - margin, minuteY, dividerPaint);
+                }
+            }
         }
 
         @Override

@@ -30,4 +30,8 @@
     <color name="blue">#0000FF</color>
     <color name="navy">#000080</color>
     <color name="black">#000000</color>
+    <color name="amber">#FFBF00</color>
+    <color name="vermilion">#E34234</color>
+    <color name="brown">#964B00</color>
+    <color name="transparent_grey">#88808080</color>
 </resources>
