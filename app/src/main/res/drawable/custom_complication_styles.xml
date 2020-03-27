@@ -38,10 +38,10 @@
     app:titleTypeface="@font/vt323_font">
 
     <ambient
-        app:highlightColor="@color/white"
-        app:iconColor="@color/white"
-        app:rangedValuePrimaryColor="@color/white"
-        app:titleColor="@color/white"
+        app:highlightColor="@color/red"
+        app:iconColor="@color/dark_red"
+        app:rangedValuePrimaryColor="@color/dark_red"
+        app:titleColor="@color/amber"
         app:borderColor="@android:color/transparent"
         app:rangedValueSecondaryColor="@android:color/transparent"/>
 </drawable>
