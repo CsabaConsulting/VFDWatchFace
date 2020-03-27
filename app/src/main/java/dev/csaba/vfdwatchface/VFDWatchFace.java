@@ -175,7 +175,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             /* Set defaults for colors */
             // We setup the time formatter
             normalTimeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-            ambientTimeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            ambientTimeFormat = new SimpleDateFormat("hh:mma", Locale.getDefault());
 
             // The time paint
             timePaint = new TextPaint();
