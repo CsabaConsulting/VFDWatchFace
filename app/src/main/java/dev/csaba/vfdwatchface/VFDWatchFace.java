@@ -23,6 +23,7 @@ import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
 import android.text.TextPaint;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -81,8 +82,6 @@ public class VFDWatchFace extends CanvasWatchFaceService {
     }
 
     private class Engine extends CanvasWatchFaceService.Engine {
-        private static final float CENTER_GAP_AND_CIRCLE_RADIUS = 4f;
-
         /* Handler to update the time once a second in interactive mode. */
         private final Handler updateTimeHandler = new EngineHandler(this);
         private Calendar calendar;
@@ -123,12 +122,15 @@ public class VFDWatchFace extends CanvasWatchFaceService {
 
             calendar = Calendar.getInstance();
 
-            initializeComplications();
+            Typeface vt323Typeface = getResources().getFont(R.font.vt323_font);
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 
-            initializeWatchFace();
+            initializeComplications(vt323Typeface, displayMetrics);
+
+            initializeWatchFace(vt323Typeface, displayMetrics);
         }
 
-        private void initializeComplications() {
+        private void initializeComplications(Typeface vt323Typeface, DisplayMetrics displayMetrics) {
             Log.d(TAG, "initializeComplications()");
 
             activeComplicationDataSparseArray =
@@ -147,6 +149,16 @@ public class VFDWatchFace extends CanvasWatchFaceService {
                         (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
 
                 if (complicationDrawable != null) {
+                    complicationDrawable.setTextTypefaceActive(vt323Typeface);
+                    complicationDrawable.setTextTypefaceAmbient(vt323Typeface);
+                    int fontSize = (int)TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_SP, 22, displayMetrics);
+                    complicationDrawable.setTextSizeActive(fontSize);
+                    complicationDrawable.setTextSizeAmbient(fontSize);
+                    complicationDrawable.setTitleTypefaceActive(vt323Typeface);
+                    complicationDrawable.setTitleTypefaceAmbient(vt323Typeface);
+                    complicationDrawable.setTitleSizeActive(fontSize);
+                    complicationDrawable.setTitleSizeAmbient(fontSize);
                     complicationDrawable.setContext(appContext);
                 }
 
@@ -158,7 +170,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             setActiveComplications(ComplicationConfigActivity.LOCATION_INDEXES);
         }
 
-        private void initializeWatchFace() {
+        private void initializeWatchFace(Typeface vt323Typeface, DisplayMetrics displayMetrics) {
             /* Set defaults for colors */
             // We setup the time formatter
             normalTimeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
@@ -169,8 +181,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             timePaint.setColor(Color.WHITE);
             timePaint.setAntiAlias(true);
             timePaint.setTextSize(TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 68, getResources().getDisplayMetrics()));
-            Typeface vt323Typeface = getResources().getFont(R.font.vt323_font);
+                    TypedValue.COMPLEX_UNIT_DIP, 68, displayMetrics));
             timePaint.setTypeface(vt323Typeface);
         }
 
