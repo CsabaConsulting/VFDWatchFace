@@ -139,9 +139,10 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
         int complicationIndex = 0;
         for (ImageButton complication: complications) {
             if (view.equals(complication)) {
-                Log.d(TAG, String.format("Complication %d click()", complicationIndex));
                 launchComplicationHelperActivity(complicationIndex);
+                break;
             }
+            complicationIndex++;
         }
     }
 

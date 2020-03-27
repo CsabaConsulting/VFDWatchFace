@@ -270,7 +270,6 @@ public class VFDWatchFace extends CanvasWatchFaceService {
                     complicationDrawable = complicationDrawableSparseArray.get(complicationIndex);
                     Rect complicationBoundingRect = complicationDrawable.getBounds();
 
-                    Log.d(TAG, String.format("%d x %d (%d x %d)", complicationBoundingRect.left, complicationBoundingRect.top, complicationBoundingRect.width(), complicationBoundingRect.width()));
                     if (complicationBoundingRect.width() > 0) {
                         if (complicationBoundingRect.contains(x, y)) {
                             return complicationIndex;
