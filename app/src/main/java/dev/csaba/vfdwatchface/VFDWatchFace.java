@@ -382,19 +382,18 @@ public class VFDWatchFace extends CanvasWatchFaceService {
 
             // For most Wear devices, width and height are the same, so we just chose one (width).
             int sizeOfComplication = width / 4;
-            int sizeOfMain = width * 400 / 150;
             int midpointOfScreen = width / 2;
-            int gap = width / 32;
+            int gap = width / 64;
 
-            for (int complicationId : ComplicationConfigActivity.LOCATION_INDEXES) {
+            for (int complicationIndex : ComplicationConfigActivity.LOCATION_INDEXES) {
                 int verticalOffset;
-                if (complicationId < 3) {
-                    verticalOffset = midpointOfScreen - sizeOfMain / 2 - sizeOfComplication - gap;
+                if (complicationIndex < 3) {
+                    verticalOffset = midpointOfScreen - sizeOfComplication * 3 / 2 + gap;
                 } else {
-                    verticalOffset = midpointOfScreen + sizeOfMain / 2 + gap;
+                    verticalOffset = midpointOfScreen + sizeOfComplication / 2 - gap;
                 }
                 int horizontalOffset = 0;
-                switch (complicationId % 3) {
+                switch (complicationIndex % 3) {
                     case 0:
                         horizontalOffset = midpointOfScreen - sizeOfComplication * 3 / 2 - gap;
                         break;
@@ -414,8 +413,12 @@ public class VFDWatchFace extends CanvasWatchFaceService {
                                 (horizontalOffset + sizeOfComplication),
                                 (verticalOffset + sizeOfComplication));
 
+                Log.d(TAG, String.format("Complication %d bounds, %d x %d %d x %d",
+                        complicationIndex, complicationBounds.left, complicationBounds.top,
+                        complicationBounds.width(), complicationBounds.height()));
+
                 ComplicationDrawable complicationDrawable =
-                        complicationDrawableSparseArray.get(complicationId);
+                        complicationDrawableSparseArray.get(complicationIndex);
                 complicationDrawable.setBounds(complicationBounds);
             }
         }
@@ -428,8 +431,8 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             calendar.setTimeInMillis(now);
 
             drawBackground(canvas);
-            drawComplications(canvas, now);
             drawWatchFace(canvas, bounds);
+            drawComplications(canvas, now);
         }
 
         private void drawBackground(Canvas canvas) {
@@ -456,7 +459,6 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             timePaint.getTextBounds(timeText, 0, timeText.length(), timeBounds);
             timeX = Math.abs(bounds.centerX() / 32);
             timeY = Math.abs(bounds.centerY() - timeBounds.centerY());
-//            timeY = Math.round((Math.abs(bounds.centerY())) - (bounds.height() * 0.02f));
 
             // We draw the date and the time
             canvas.drawText(timeText, timeX, timeY, timePaint);
