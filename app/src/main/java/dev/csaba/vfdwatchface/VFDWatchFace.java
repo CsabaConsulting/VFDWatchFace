@@ -144,6 +144,8 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             // All styles for the complications are defined in
             // drawable/custom_complication_styles.xml.
             Context appContext = getApplicationContext();
+            int fontSize = (int)TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_SP, 28, displayMetrics);
             for (int complicationId : ComplicationConfigActivity.LOCATION_INDEXES) {
                 ComplicationDrawable complicationDrawable =
                         (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
@@ -151,8 +153,6 @@ public class VFDWatchFace extends CanvasWatchFaceService {
                 if (complicationDrawable != null) {
                     complicationDrawable.setTextTypefaceActive(vt323Typeface);
                     complicationDrawable.setTextTypefaceAmbient(vt323Typeface);
-                    int fontSize = (int)TypedValue.applyDimension(
-                            TypedValue.COMPLEX_UNIT_SP, 22, displayMetrics);
                     complicationDrawable.setTextSizeActive(fontSize);
                     complicationDrawable.setTextSizeAmbient(fontSize);
                     complicationDrawable.setTitleTypefaceActive(vt323Typeface);
