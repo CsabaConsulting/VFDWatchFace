@@ -274,20 +274,19 @@ public class VFDWatchFace extends CanvasWatchFaceService {
          */
         private int getTappedComplicationIndex(int x, int y) {
 
-            ComplicationData complicationData;
-            ComplicationDrawable complicationDrawable;
-
             long currentTimeMillis = System.currentTimeMillis();
 
             for (int complicationIndex : ComplicationConfigActivity.LOCATION_INDEXES) {
-                complicationData = activeComplicationDataSparseArray.get(complicationIndex);
+                ComplicationData complicationData =
+                        activeComplicationDataSparseArray.get(complicationIndex);
 
                 if ((complicationData != null)
                         && (complicationData.isActive(currentTimeMillis))
                         && (complicationData.getType() != ComplicationData.TYPE_NOT_CONFIGURED)
                         && (complicationData.getType() != ComplicationData.TYPE_EMPTY)) {
 
-                    complicationDrawable = complicationDrawableSparseArray.get(complicationIndex);
+                    ComplicationDrawable complicationDrawable =
+                            complicationDrawableSparseArray.get(complicationIndex);
                     Rect complicationBoundingRect = complicationDrawable.getBounds();
 
                     if (complicationBoundingRect.width() > 0) {
@@ -367,13 +366,9 @@ public class VFDWatchFace extends CanvasWatchFaceService {
         }
 
         private void updateWatchHandStyle() {
-            if (ambient) {
-                timePaint.setAntiAlias(false);
-                dividerPaint.setAntiAlias(false);
-            } else {
-                timePaint.setAntiAlias(true);
-                dividerPaint.setAntiAlias(false);
-            }
+            boolean antiAlias = !ambient;
+            timePaint.setAntiAlias(antiAlias);
+            dividerPaint.setAntiAlias(antiAlias);
         }
 
         @Override
@@ -384,8 +379,9 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             /* Dim display in mute mode. */
             if (muteMode != inMuteMode) {
                 muteMode = inMuteMode;
-                timePaint.setAlpha(inMuteMode ? 100 : 255);
-                dividerPaint.setAlpha(inMuteMode ? 100 : 255);
+                int alpha = inMuteMode ? 100 : 255;
+                timePaint.setAlpha(alpha);
+                dividerPaint.setAlpha(alpha);
                 invalidate();
             }
         }
