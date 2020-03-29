@@ -220,7 +220,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             for (int complicationIndex : ComplicationConfigActivity.LOCATION_INDEXES) {
                 complicationDrawable = complicationDrawableSparseArray.get(complicationIndex);
 
-                if(complicationDrawable != null) {
+                if (complicationDrawable != null) {
                     complicationDrawable.setLowBitAmbient(lowBitAmbient);
                     complicationDrawable.setBurnInProtection(mBurnInProtection);
                 }
