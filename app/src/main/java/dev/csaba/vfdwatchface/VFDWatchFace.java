@@ -280,10 +280,11 @@ public class VFDWatchFace extends CanvasWatchFaceService {
                 ComplicationData complicationData =
                         activeComplicationDataSparseArray.get(complicationIndex);
 
-                if ((complicationData != null)
-                        && (complicationData.isActive(currentTimeMillis))
-                        && (complicationData.getType() != ComplicationData.TYPE_NOT_CONFIGURED)
-                        && (complicationData.getType() != ComplicationData.TYPE_EMPTY)) {
+                if (complicationData != null
+                    && complicationData.isActive(currentTimeMillis)
+                    && complicationData.getType() != ComplicationData.TYPE_NOT_CONFIGURED
+                    && complicationData.getType() != ComplicationData.TYPE_EMPTY)
+                {
 
                     ComplicationDrawable complicationDrawable =
                             complicationDrawableSparseArray.get(complicationIndex);
@@ -374,7 +375,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
         @Override
         public void onInterruptionFilterChanged(int interruptionFilter) {
             super.onInterruptionFilterChanged(interruptionFilter);
-            boolean inMuteMode = (interruptionFilter == WatchFaceService.INTERRUPTION_FILTER_NONE);
+            boolean inMuteMode = interruptionFilter == WatchFaceService.INTERRUPTION_FILTER_NONE;
 
             /* Dim display in mute mode. */
             if (muteMode != inMuteMode) {
