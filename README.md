@@ -1,5 +1,5 @@
 # VFDWatchFace
-A WearOS watch face mimicking digital display also sporting numerous complication slots
+A WearOS watch face mimicking digital display also sporting numerous complication slots. Store listing: https://play.google.com/store/apps/details?id=dev.csaba.vfdwatchface
 
 Goals:
 
