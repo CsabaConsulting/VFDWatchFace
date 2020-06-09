@@ -77,7 +77,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
         }});
         put("b", new HashMap<String, Integer>() {{
             put(TIME_COLOR_TAG, Color.CYAN);
-            put(DIVIDER_COLOR_TAG, Color.parseColor("#BF00FF"));
+            put(DIVIDER_COLOR_TAG, Color.parseColor("#00BFFF"));
         }});
     }};
     private static final Map<String, Integer> COMPLICATION_COLOR_MAP =
