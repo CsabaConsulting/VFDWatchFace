@@ -176,7 +176,9 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             return getPreferences().getString(ComplicationConfigActivity.COLOR_SCHEME_TAG, "r");
         }
 
-        private void setComplicationDrawable(int complicationId, String colorScheme, Context appContext) {
+        private ComplicationDrawable setComplicationDrawable(int complicationId, String colorScheme,
+                                                             Context appContext)
+        {
             ComplicationDrawable complicationDrawable =
                     (ComplicationDrawable) getDrawable(COMPLICATION_COLOR_MAP.get(colorScheme));
 
@@ -195,6 +197,8 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             // Adds new complications to a SparseArray to simplify setting styles and ambient
             // properties for all complications, i.e., iterate over them all.
             complicationDrawableSparseArray.put(complicationId, complicationDrawable);
+
+            return complicationDrawable;
         }
 
         private void initializeComplications(String colorScheme)
@@ -212,8 +216,8 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             // All styles for the complications are defined in
             // drawable/*_complication_styles.xml.
             Context appContext = getApplicationContext();
-            for (int complicationId : ComplicationConfigActivity.LOCATION_INDEXES) {
-                setComplicationDrawable(complicationId, colorScheme, appContext);
+            for (int complicationIndex : ComplicationConfigActivity.LOCATION_INDEXES) {
+                setComplicationDrawable(complicationIndex, colorScheme, appContext);
             }
             complicationColorScheme = colorScheme;
 
@@ -267,24 +271,39 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             Log.d(TAG, "onPropertiesChanged");
             // Updates complications to properly render in ambient mode based on the
             // screen's capabilities.
-            ComplicationDrawable complicationDrawable;
+            String colorScheme = getColorScheme();
+            boolean shouldReset = false;
+            if (complicationColorScheme != null && !colorScheme.equals(complicationColorScheme)) {
+                complicationColorScheme = colorScheme;
+                Log.d(TAG, "Re init ComplicationDrawable color schemes");
+                Context appContext = getApplicationContext();
+                for (int complicationIndex : ComplicationConfigActivity.LOCATION_INDEXES) {
+                    ComplicationDrawable complicationDrawable =
+                        complicationDrawableSparseArray.get(complicationIndex);
+                    Rect complicationBounds = complicationDrawable.getBounds();
+                    Log.d(TAG, String.format("Complication bounds %d 2, %d x %d %d x %d",
+                            complicationIndex, complicationBounds.left, complicationBounds.top,
+                            complicationBounds.width(), complicationBounds.height()));
+                    complicationDrawable =
+                        setComplicationDrawable(complicationIndex, colorScheme, appContext);
+                    complicationDrawable.setBounds(complicationBounds);
+                }
+                shouldReset = true;
+                setActiveComplications();
+            }
 
+            ComplicationDrawable complicationDrawable;
             for (int complicationIndex : ComplicationConfigActivity.LOCATION_INDEXES) {
                 complicationDrawable = complicationDrawableSparseArray.get(complicationIndex);
-                String colorScheme = getColorScheme();
-                if (complicationColorScheme != null && !colorScheme.equals(complicationColorScheme)) {
-                    complicationColorScheme = colorScheme;
-                    Log.d(TAG, "Re init ComplicationDrawable color schemes");
-                    Context appContext = getApplicationContext();
-                    for (int complicationId : ComplicationConfigActivity.LOCATION_INDEXES) {
-                        setComplicationDrawable(complicationId, colorScheme, appContext);
-                    }
-                }
 
                 if (complicationDrawable != null) {
                     complicationDrawable.setLowBitAmbient(lowBitAmbient);
                     complicationDrawable.setBurnInProtection(mBurnInProtection);
                 }
+            }
+
+            if (shouldReset) {
+                setActiveComplications(ComplicationConfigActivity.LOCATION_INDEXES);
             }
         }
 
@@ -461,6 +480,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
              * better readability.
              */
 
+            Log.d(TAG, "onSurfaceChanged");
             // For most Wear devices, width and height are the same, so we just chose one (width).
             int sizeOfComplication = width / 4;
             int midpointOfScreen = width / 2;
@@ -494,7 +514,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
                                 (horizontalOffset + sizeOfComplication),
                                 (verticalOffset + sizeOfComplication));
 
-                Log.d(TAG, String.format("Complication %d bounds, %d x %d %d x %d",
+                Log.d(TAG, String.format("Complication bounds 1 %d, %d x %d %d x %d",
                         complicationIndex, complicationBounds.left, complicationBounds.top,
                         complicationBounds.width(), complicationBounds.height()));
 
