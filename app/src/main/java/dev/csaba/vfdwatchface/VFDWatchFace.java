@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -16,6 +17,7 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import android.preference.PreferenceManager;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.ComplicationHelperActivity;
 import android.support.wearable.complications.rendering.ComplicationDrawable;
@@ -32,7 +34,9 @@ import android.view.SurfaceHolder;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -57,6 +61,26 @@ public class VFDWatchFace extends CanvasWatchFaceService {
      * Handler message id for updating the time periodically in interactive mode.
      */
     private static final int MSG_UPDATE_TIME = 0;
+
+    private static final String COLOR_SCHEME_TAG = "colorScheme";
+    private static final String TIME_COLOR_TAG = "time";
+    private static final String DIVIDER_COLOR_TAG = "divider";
+    private static final Map<String, Map<String, Integer>> COLOR_MAP =
+            new HashMap<String, Map<String, Integer>>()
+    {{
+        put("r", new HashMap<String, Integer>() {{
+            put(TIME_COLOR_TAG, Color.YELLOW);
+            put(DIVIDER_COLOR_TAG, Color.parseColor("#FFBF00"));  // Amber
+        }});
+        put("g", new HashMap<String, Integer>() {{
+            put(TIME_COLOR_TAG, Color.GREEN);
+            put(DIVIDER_COLOR_TAG, Color.parseColor("#00FFBF"));
+        }});
+        put("b", new HashMap<String, Integer>() {{
+            put(TIME_COLOR_TAG, Color.CYAN);
+            put(DIVIDER_COLOR_TAG, Color.parseColor("#BF00FF"));
+        }});
+    }};
 
     @Override
     public Engine onCreateEngine() {
@@ -131,6 +155,18 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             initializeWatchFace(vt323Typeface, displayMetrics);
         }
 
+        private SharedPreferences getPreferences() {
+            return PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        }
+
+        private String getColorScheme() {
+            return getPreferences().getString(COLOR_SCHEME_TAG, "r");
+        }
+
+        private void setColorScheme(String colorScheme) {
+            getPreferences().edit().putString(COLOR_SCHEME_TAG, colorScheme).apply();
+        }
+
         private void initializeComplications(Typeface vt323Typeface, DisplayMetrics displayMetrics) {
             Log.d(TAG, "initializeComplications()");
 
@@ -177,9 +213,11 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             normalTimeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
             ambientTimeFormat = new SimpleDateFormat("hh:mma", Locale.getDefault());
 
+            String colorScheme = getColorScheme();
+
             // The time paint
             timePaint = new TextPaint();
-            timePaint.setColor(Color.YELLOW);
+            timePaint.setColor(COLOR_MAP.get(colorScheme).get(TIME_COLOR_TAG));
             timePaint.setAntiAlias(true);
             timePaint.setTextSize(TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP, 68, displayMetrics));
@@ -187,7 +225,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
 
             // Divider paint
             dividerPaint = new TextPaint();
-            dividerPaint.setColor(Color.parseColor("#FFBF00"));  // Amber
+            dividerPaint.setColor(COLOR_MAP.get(colorScheme).get(DIVIDER_COLOR_TAG));
             dividerPaint.setAntiAlias(true);
             dividerPaint.setTextSize(TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP, 68, displayMetrics));
