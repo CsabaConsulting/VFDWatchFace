@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -19,6 +20,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
@@ -42,7 +45,7 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
     private static final int MIN_LOCATION_INDEX = 0;
     private static final int MAX_LOCATION_INDEX = 5;
     public static final int[] LOCATION_INDEXES =
-            IntStream.rangeClosed(MIN_LOCATION_INDEX, MAX_LOCATION_INDEX).toArray();
+        IntStream.rangeClosed(MIN_LOCATION_INDEX, MAX_LOCATION_INDEX).toArray();
     private static final int[] BACKGROUND_RESOURCE_IDS = {
         R.id.top_left_complication_background,
         R.id.top_center_complication_background,
@@ -73,6 +76,14 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
         R.id.blue_color_scheme
     };
     private static final String[] COLOR_SCHEME_IDS = { "r", "g", "b" };
+    private static final Map<String, Integer> COLOR_SCHEME_REVERSE_INDEX =
+        new HashMap<String, Integer>() {{
+            put("r", 0);
+            put("g", 1);
+            put("b", 2);
+        }};
+
+
 
     // Selected complication id by user.
     private int selectedComplicationId;
@@ -91,6 +102,8 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
     private ImageButton[] colorSchemes = new ImageButton[MAX_COLOR_SCHEME];
 
     private Drawable defaultAddComplicationDrawable;
+
+    private String colorScheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,10 +134,13 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
             complicationBackgrounds[locationIndex].setVisibility(View.INVISIBLE);
         }
 
+        colorScheme = getColorScheme();
         for (int colorSchemeIndex = 0; colorSchemeIndex < MAX_COLOR_SCHEME; colorSchemeIndex++) {
             colorSchemeBackgrounds[colorSchemeIndex] =
                     findViewById(COLOR_SCHEME_BG_RESOURCE_IDS[colorSchemeIndex]);
-            // colorSchemeBackgrounds[colorSchemeIndex].setVisibility(View.INVISIBLE);
+            if (colorScheme.equals(COLOR_SCHEME_IDS[colorSchemeIndex])) {
+                colorSchemeBackgrounds[colorSchemeIndex].setBackgroundColor(Color.WHITE);
+            }
             colorSchemes[colorSchemeIndex] =
                     findViewById(COLOR_SCHEME_RESOURCE_IDS[colorSchemeIndex]);
             colorSchemes[colorSchemeIndex].setOnClickListener(this);
@@ -174,10 +190,16 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
             complicationIndex++;
         }
         int colorSchemeIndex = 0;
-        for (ImageButton colorScheme: colorSchemes) {
-            if (view.equals(colorScheme)) {
-                setColorScheme(COLOR_SCHEME_IDS[colorSchemeIndex]);
-                Log.d(TAG, "Set color scheme to " + COLOR_SCHEME_IDS[colorSchemeIndex]);
+        for (ImageButton colorSchemeButton: colorSchemes) {
+            if (view.equals(colorSchemeButton)) {
+                if (!colorScheme.equals(COLOR_SCHEME_IDS[colorSchemeIndex])) {
+                    int currentIndex = COLOR_SCHEME_REVERSE_INDEX.get(colorScheme);
+                    colorSchemeBackgrounds[currentIndex].setBackgroundColor(Color.TRANSPARENT);
+                    colorSchemeBackgrounds[colorSchemeIndex].setBackgroundColor(Color.WHITE);
+                    colorScheme = COLOR_SCHEME_IDS[colorSchemeIndex];
+                    setColorScheme(COLOR_SCHEME_IDS[colorSchemeIndex]);
+                    Log.d(TAG, "Set color scheme to " + COLOR_SCHEME_IDS[colorSchemeIndex]);
+                }
                 break;
             }
             colorSchemeIndex++;
@@ -186,6 +208,10 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
 
     private SharedPreferences getPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    }
+
+    private String getColorScheme() {
+        return getPreferences().getString(ComplicationConfigActivity.COLOR_SCHEME_TAG, "r");
     }
 
     private void setColorScheme(String colorScheme) {
