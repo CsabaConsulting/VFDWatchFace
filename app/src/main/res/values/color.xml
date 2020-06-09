@@ -34,4 +34,12 @@
     <color name="vermilion">#E34234</color>
     <color name="brown">#964B00</color>
     <color name="transparent_grey">#88808080</color>
+    <color name="blue_highlight">#15f4ee</color>
+    <color name="turquoise">#40e0d0</color>
+    <color name="darker_blue">#2f2fc2</color>
+    <color name="darker_green">#0b610b</color>
+    <color name="neon_green">#00ff00</color>
+    <color name="light_green">#00bd00</color>
+    <color name="faded_green">#6bd66b</color>
+    <color name="highlight_green">#4aff4a</color>
 </resources>

@@ -62,7 +62,6 @@ public class VFDWatchFace extends CanvasWatchFaceService {
      */
     private static final int MSG_UPDATE_TIME = 0;
 
-    private static final String COLOR_SCHEME_TAG = "colorScheme";
     private static final String TIME_COLOR_TAG = "time";
     private static final String DIVIDER_COLOR_TAG = "divider";
     private static final Map<String, Map<String, Integer>> COLOR_MAP =
@@ -81,6 +80,12 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             put(DIVIDER_COLOR_TAG, Color.parseColor("#BF00FF"));
         }});
     }};
+    private static final Map<String, Integer> COMPLICATION_COLOR_MAP =
+        new HashMap<String, Integer>() {{
+            put("r", R.drawable.red_complication_styles);
+            put("g", R.drawable.green_complication_styles);
+            put("b", R.drawable.blue_complication_styles);
+        }};
 
     @Override
     public Engine onCreateEngine() {
@@ -124,6 +129,11 @@ public class VFDWatchFace extends CanvasWatchFaceService {
 
         private TextPaint timePaint;
         private TextPaint dividerPaint;
+        private Typeface vt323Typeface;
+        private DisplayMetrics displayMetrics;
+        private int fontSize = 28;
+        private volatile String complicationColorScheme;
+        private volatile String paintColorScheme;
 
         private boolean ambient;
 
@@ -147,12 +157,15 @@ public class VFDWatchFace extends CanvasWatchFaceService {
 
             calendar = Calendar.getInstance();
 
-            Typeface vt323Typeface = getResources().getFont(R.font.vt323_font);
-            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            vt323Typeface = getResources().getFont(R.font.vt323_font);
+            displayMetrics = getResources().getDisplayMetrics();
+            fontSize = (int)TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_SP, 28, displayMetrics);
+            String colorScheme = getColorScheme();
 
-            initializeComplications(vt323Typeface, displayMetrics);
+            initializeComplications(colorScheme);
 
-            initializeWatchFace(vt323Typeface, displayMetrics);
+            initializeWatchFace(colorScheme);
         }
 
         private SharedPreferences getPreferences() {
@@ -160,14 +173,32 @@ public class VFDWatchFace extends CanvasWatchFaceService {
         }
 
         private String getColorScheme() {
-            return getPreferences().getString(COLOR_SCHEME_TAG, "r");
+            return getPreferences().getString(ComplicationConfigActivity.COLOR_SCHEME_TAG, "r");
         }
 
-        private void setColorScheme(String colorScheme) {
-            getPreferences().edit().putString(COLOR_SCHEME_TAG, colorScheme).apply();
+        private void setComplicationDrawable(int complicationId, String colorScheme, Context appContext) {
+            ComplicationDrawable complicationDrawable =
+                    (ComplicationDrawable) getDrawable(COMPLICATION_COLOR_MAP.get(colorScheme));
+
+            if (complicationDrawable != null) {
+                complicationDrawable.setTextTypefaceActive(vt323Typeface);
+                complicationDrawable.setTextTypefaceAmbient(vt323Typeface);
+                complicationDrawable.setTextSizeActive(fontSize);
+                complicationDrawable.setTextSizeAmbient(fontSize);
+                complicationDrawable.setTitleTypefaceActive(vt323Typeface);
+                complicationDrawable.setTitleTypefaceAmbient(vt323Typeface);
+                complicationDrawable.setTitleSizeActive(fontSize);
+                complicationDrawable.setTitleSizeAmbient(fontSize);
+                complicationDrawable.setContext(appContext);
+            }
+
+            // Adds new complications to a SparseArray to simplify setting styles and ambient
+            // properties for all complications, i.e., iterate over them all.
+            complicationDrawableSparseArray.put(complicationId, complicationDrawable);
         }
 
-        private void initializeComplications(Typeface vt323Typeface, DisplayMetrics displayMetrics) {
+        private void initializeComplications(String colorScheme)
+        {
             Log.d(TAG, "initializeComplications()");
 
             activeComplicationDataSparseArray =
@@ -179,42 +210,24 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             // complication on the watch face. In this watch face, we only create left and right,
             // but you could add many more.
             // All styles for the complications are defined in
-            // drawable/custom_complication_styles.xml.
+            // drawable/*_complication_styles.xml.
             Context appContext = getApplicationContext();
-            int fontSize = (int)TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_SP, 28, displayMetrics);
             for (int complicationId : ComplicationConfigActivity.LOCATION_INDEXES) {
-                ComplicationDrawable complicationDrawable =
-                        (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
-
-                if (complicationDrawable != null) {
-                    complicationDrawable.setTextTypefaceActive(vt323Typeface);
-                    complicationDrawable.setTextTypefaceAmbient(vt323Typeface);
-                    complicationDrawable.setTextSizeActive(fontSize);
-                    complicationDrawable.setTextSizeAmbient(fontSize);
-                    complicationDrawable.setTitleTypefaceActive(vt323Typeface);
-                    complicationDrawable.setTitleTypefaceAmbient(vt323Typeface);
-                    complicationDrawable.setTitleSizeActive(fontSize);
-                    complicationDrawable.setTitleSizeAmbient(fontSize);
-                    complicationDrawable.setContext(appContext);
-                }
-
-                // Adds new complications to a SparseArray to simplify setting styles and ambient
-                // properties for all complications, i.e., iterate over them all.
-                complicationDrawableSparseArray.put(complicationId, complicationDrawable);
+                setComplicationDrawable(complicationId, colorScheme, appContext);
             }
+            complicationColorScheme = colorScheme;
 
             setActiveComplications(ComplicationConfigActivity.LOCATION_INDEXES);
         }
 
-        private void initializeWatchFace(Typeface vt323Typeface, DisplayMetrics displayMetrics) {
+        private void initializeWatchFace(String colorScheme)
+        {
             /* Set defaults for colors */
             // We setup the time formatter
             normalTimeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
             ambientTimeFormat = new SimpleDateFormat("hh:mma", Locale.getDefault());
 
-            String colorScheme = getColorScheme();
-
+            paintColorScheme = colorScheme;
             // The time paint
             timePaint = new TextPaint();
             timePaint.setColor(COLOR_MAP.get(colorScheme).get(TIME_COLOR_TAG));
@@ -251,12 +264,22 @@ public class VFDWatchFace extends CanvasWatchFaceService {
              */
             boolean mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
 
+            Log.d(TAG, "onPropertiesChanged");
             // Updates complications to properly render in ambient mode based on the
             // screen's capabilities.
             ComplicationDrawable complicationDrawable;
 
             for (int complicationIndex : ComplicationConfigActivity.LOCATION_INDEXES) {
                 complicationDrawable = complicationDrawableSparseArray.get(complicationIndex);
+                String colorScheme = getColorScheme();
+                if (complicationColorScheme != null && !colorScheme.equals(complicationColorScheme)) {
+                    complicationColorScheme = colorScheme;
+                    Log.d(TAG, "Re init ComplicationDrawable color schemes");
+                    Context appContext = getApplicationContext();
+                    for (int complicationId : ComplicationConfigActivity.LOCATION_INDEXES) {
+                        setComplicationDrawable(complicationId, colorScheme, appContext);
+                    }
+                }
 
                 if (complicationDrawable != null) {
                     complicationDrawable.setLowBitAmbient(lowBitAmbient);
@@ -561,10 +584,18 @@ public class VFDWatchFace extends CanvasWatchFaceService {
         public void onVisibilityChanged(boolean visible) {
             super.onVisibilityChanged(visible);
 
+            Log.d(TAG, "onVisibilityChanged");
             if (visible) {
                 registerReceiver();
                 /* Update time zone in case it changed while we weren't visible. */
                 calendar.setTimeZone(TimeZone.getDefault());
+                String colorScheme = getColorScheme();
+                if (paintColorScheme != null && !paintColorScheme.equals(colorScheme)) {
+                    paintColorScheme = colorScheme;
+                    timePaint.setColor(COLOR_MAP.get(colorScheme).get(TIME_COLOR_TAG));
+                    dividerPaint.setColor(COLOR_MAP.get(colorScheme).get(DIVIDER_COLOR_TAG));
+                    Log.d(TAG, "Re init paint color schemes");
+                }
                 invalidate();
             } else {
                 unregisterReceiver();
