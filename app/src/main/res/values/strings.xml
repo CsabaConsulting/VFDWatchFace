@@ -2,4 +2,13 @@
     <string name="app_name">VFD Watch Face</string>
     <string name="message">Watch face tapped</string>
     <string name="watch_name">VFD Watch</string>
+    <string name="complication_top_left">Complication top left</string>
+    <string name="complication_top_center">Complication top center</string>
+    <string name="complication_top_right">Complication top right</string>
+    <string name="complication_bottom_left">Complication bottom left</string>
+    <string name="complication_bottom_center">Complication bottom center</string>
+    <string name="complication_bottom_right">Complication bottom right</string>
+    <string name="red_scheme_selector">Red scheme selector</string>
+    <string name="green_scheme_selector">Green scheme selector</string>
+    <string name="blue_scheme_selector">Blue scheme selector</string>
 </resources>

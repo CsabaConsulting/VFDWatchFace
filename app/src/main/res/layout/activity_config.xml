@@ -39,6 +39,7 @@
     <ImageView
         android:id="@+id/top_center_complication_background"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_top_center"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignTop="@+id/watch_face_background"
@@ -50,6 +51,7 @@
     <ImageButton
         android:id="@+id/top_center_complication"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_top_center"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/top_center_complication_background"
@@ -62,6 +64,7 @@
         android:layout_height="48dp"
         android:src="@drawable/added_complication"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_top_left"
         android:background="@android:color/transparent"
         android:layout_alignTop="@+id/top_center_complication_background"
         android:layout_alignStart="@+id/watch_face_background"
@@ -72,6 +75,7 @@
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_top_left"
         android:background="@android:color/transparent"
         android:layout_alignTop="@+id/top_left_complication_background"
         android:layout_alignStart="@+id/top_left_complication_background" />
@@ -82,6 +86,7 @@
         android:layout_height="48dp"
         android:src="@drawable/added_complication"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_top_right"
         android:background="@android:color/transparent"
         android:layout_alignTop="@+id/top_center_complication_background"
         android:layout_alignStart="@+id/top_right_complication" />
@@ -91,6 +96,7 @@
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_top_right"
         android:background="@android:color/transparent"
         android:layout_alignTop="@+id/top_right_complication_background"
         android:layout_alignEnd="@+id/watch_face_background"
@@ -99,6 +105,7 @@
     <ImageView
         android:id="@+id/bottom_center_complication_background"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_bottom_center"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignBottom="@+id/watch_face_background"
@@ -110,6 +117,7 @@
     <ImageButton
         android:id="@+id/bottom_center_complication"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_bottom_center"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -119,6 +127,7 @@
     <ImageView
         android:id="@+id/bottom_left_complication_background"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_bottom_left"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignTop="@+id/bottom_center_complication_background"
@@ -132,6 +141,7 @@
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_bottom_left"
         android:background="@android:color/transparent"
         android:layout_alignTop="@+id/bottom_left_complication_background"
         android:layout_alignStart="@+id/bottom_left_complication_background" />
@@ -142,6 +152,7 @@
         android:layout_height="48dp"
         android:src="@drawable/added_complication"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_bottom_right"
         android:background="@android:color/transparent"
         android:layout_alignTop="@+id/bottom_center_complication_background"
         android:layout_alignStart="@+id/bottom_right_complication" />
@@ -151,6 +162,7 @@
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/complication_bottom_right"
         android:background="@android:color/transparent"
         android:layout_alignTop="@+id/bottom_right_complication_background"
         android:layout_alignEnd="@+id/watch_face_background"
@@ -159,6 +171,7 @@
     <ImageView
         android:id="@+id/green_color_scheme_background"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/green_scheme_selector"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_centerVertical="true"
@@ -169,6 +182,7 @@
     <ImageButton
         android:id="@+id/green_color_scheme"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/green_scheme_selector"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/green_color_scheme_background"
@@ -178,6 +192,7 @@
     <ImageView
         android:id="@+id/red_color_scheme_background"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/red_scheme_selector"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_centerVertical="true"
@@ -190,6 +205,7 @@
     <ImageButton
         android:id="@+id/red_color_scheme"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/red_scheme_selector"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/red_color_scheme_background"
@@ -199,6 +215,7 @@
     <ImageView
         android:id="@+id/blue_color_scheme_background"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/blue_scheme_selector"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_centerVertical="true"
@@ -211,6 +228,7 @@
     <ImageButton
         android:id="@+id/blue_color_scheme"
         style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/blue_scheme_selector"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/blue_color_scheme_background"
