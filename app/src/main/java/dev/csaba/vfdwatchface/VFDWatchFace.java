@@ -201,8 +201,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             return complicationDrawable;
         }
 
-        private void initializeComplications(String colorScheme)
-        {
+        private void initializeComplications(String colorScheme) {
             Log.d(TAG, "initializeComplications()");
 
             activeComplicationDataSparseArray =
@@ -224,8 +223,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
             setActiveComplications(ComplicationConfigActivity.LOCATION_INDEXES);
         }
 
-        private void initializeWatchFace(String colorScheme)
-        {
+        private void initializeWatchFace(String colorScheme) {
             /* Set defaults for colors */
             // We setup the time formatter
             normalTimeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
