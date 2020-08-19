@@ -83,8 +83,6 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
             put("b", 2);
         }};
 
-
-
     // Selected complication id by user.
     private int selectedComplicationId;
 
@@ -96,7 +94,6 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
 
     private ImageView[] complicationBackgrounds;
     private ImageButton[] complications;
-
 
     private ImageView[] colorSchemeBackgrounds = new ImageView[MAX_COLOR_SCHEME];
     private ImageButton[] colorSchemes = new ImageButton[MAX_COLOR_SCHEME];
