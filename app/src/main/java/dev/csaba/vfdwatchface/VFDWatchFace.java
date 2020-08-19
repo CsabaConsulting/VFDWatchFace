@@ -568,7 +568,6 @@ public class VFDWatchFace extends CanvasWatchFaceService {
                 String[] timeParts = timeText.split(":");
 
                 int margin = bounds.width() / 12;
-                boolean paintDividers = calendar.get(Calendar.SECOND) % 2 == 0;
 
                 // Minute: in center
                 timePaint.getTextBounds(timeParts[1], 0, timeParts[1].length(), timeBounds);
@@ -584,9 +583,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
 
                 canvas.drawText(timeParts[0], hourX, minuteY, timePaint);
 
-                if (paintDividers) {
-                    canvas.drawText(":", minuteX - margin, minuteY, dividerPaint);
-                }
+                canvas.drawText(":", minuteX - margin, minuteY, dividerPaint);
 
                 // Second
                 timePaint.getTextBounds(timeParts[2], 0, timeParts[2].length(), timeBounds);
@@ -594,9 +591,7 @@ public class VFDWatchFace extends CanvasWatchFaceService {
 
                 canvas.drawText(timeParts[2], secondX, minuteY, timePaint);
 
-                if (paintDividers) {
-                    canvas.drawText(":", secondX - margin, minuteY, dividerPaint);
-                }
+                canvas.drawText(":", secondX - margin, minuteY, dividerPaint);
             }
         }
 
