@@ -36,6 +36,7 @@
         <service
             android:name=".VFDWatchFace"
             android:label="@string/app_name"
+            android:exported="true"
             android:permission="android.permission.BIND_WALLPAPER">
 
             <meta-data
@@ -63,7 +64,7 @@
 
         <activity
             android:name=".ComplicationConfigActivity"
-            android:label="@string/app_name">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.example.android.wearable.watchface.CONFIG_COMPLICATION"/>
                 <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION"/>
