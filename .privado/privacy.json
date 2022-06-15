@@ -1,0 +1,15 @@
+{
+  "repoId": "repoId",
+  "repoName": "",
+  "repoURL": "",
+  "branchName": "master",
+  "commitId": "",
+  "customerId": "cliCustomer",
+  "scanId": null,
+  "permissionList": [],
+  "piiList": [],
+  "vendorList": [],
+  "interestsubjectList": [],
+  "created": "2022-06-15 06:23:56.115940",
+  "updated": "2022-06-15 06:23:56.115969"
+}
