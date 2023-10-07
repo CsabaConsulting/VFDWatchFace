@@ -95,8 +95,8 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
     private ImageView[] complicationBackgrounds;
     private ImageButton[] complications;
 
-    private ImageView[] colorSchemeBackgrounds = new ImageView[MAX_COLOR_SCHEME];
-    private ImageButton[] colorSchemes = new ImageButton[MAX_COLOR_SCHEME];
+    private final ImageView[] colorSchemeBackgrounds = new ImageView[MAX_COLOR_SCHEME];
+    private final ImageButton[] colorSchemes = new ImageButton[MAX_COLOR_SCHEME];
 
     private Drawable defaultAddComplicationDrawable;
 
